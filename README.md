@@ -1,7 +1,8 @@
 # Inteligencia Artificial
 
-Alumno: Hernandez Astorga Francisco Ricardo
-Semestre: 6°
+*Alumno:* Hernandez Astorga Francisco Ricardo
+
+*Semestre:* 6°
 
 Repositorio de notas para la materia de Inteligencia Artificial
 
