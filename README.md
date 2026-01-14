@@ -33,9 +33,9 @@ Durante la clase nos enfocamos principalmente en la parte de **sensores**, anali
 
 ---
 
-**Ejemplo 1: Torres de Babel**
+**Ejemplo 1: Torres de Hanoi**
 
-En este ejemplo, analizamos los posibles estados que tiene el juego de torres de babel.  
+En este ejemplo, analizamos los posibles estados que tiene el juego de torres de Hanoi.  
 
 ![Torres de Babel](imagenes/torres_de_babel.png)    
 
