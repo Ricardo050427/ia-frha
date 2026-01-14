@@ -53,7 +53,7 @@ En este problema se ve reflejado que aunque haya menos combinaciones, es mas com
 
 ![3y3](imagenes/3y3.png)  
 
-Aqui los estados serian el numero de esclavistas de un lado del rio, el numero de trabajadores sin paga de un lado del rio y el lado del rio, dandonos la operacion de 4 x 4 x 2, dando un |S| de 32.
+Aqui los estados serian el numero de esclavistas de un lado del rio, el numero de trabajadores sin paga de un lado del rio y el lado del rio, dandonos la operacion de 4 x 4 x 2, dando un total de 32 estados.
 
 ## Clase – 14/01/2026
 
