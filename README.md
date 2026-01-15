@@ -87,7 +87,7 @@ En el ajedrez, para saber cómo quedará el tablero (nuevo estado), necesitas sa
 
 **3. Entorno Estocástico, Estatico, Discreto)**  
 **Fórmula:** $S = (S^1, ... , S^m)$ donde $m$ es la cardinalidad de $S$.  
-$Pr[S | a]$ = [Pr[S = s^1 | a], ... , Pr[S = s^m | a]]$  
+$Pr[S | a]$ = $[Pr[S = s^1 | a], ... , Pr[S = s^m | a]]$  
 Esto es cuando no hay certeza absoluta. La misma acción en el mismo estado puede llevar a resultados diferentes debido al azar o a variables desconocidas.  
 Un ejemplo podria ser lanzar un dado. El estado inicial es el dado en tu mano ($S$), la acción es lanzar ($a$), pero el estado final es incierto, tienes una probabilidad de $1/6$ para cada cara. Aunque el entorno sea estático (el dado no cambia de cara mientras piensas), el resultado de la acción es aleatorio.
 
