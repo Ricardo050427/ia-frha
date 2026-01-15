@@ -93,4 +93,4 @@ Un ejemplo podria ser lanzar un dado. El estado inicial es el dado en tu mano ($
 
 ## Clase – 15/01/2026
 
-notas
+notas notas notas
