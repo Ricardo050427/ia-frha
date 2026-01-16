@@ -1,4 +1,4 @@
-# **Inteligencia Artificial**
+# **Primer semestre: Inteligencia Artificial**
 
 **Alumno:** Hernández Astorga Francisco Ricardo
 
@@ -8,7 +8,7 @@
 
 Repositorio de notas personales para la materia de **Inteligencia Artificial**.
 
-## **Clase – 12/01/2026: IA**
+## **Clase – 12/01/2026**
 
 **¿Qué es la Inteligencia Artificial?**
 
@@ -17,7 +17,7 @@ Un punto interesante es cuestionar si es correcto que la IA imite únicamente la
 
 > "Maximizar la esperanza (*expectation*) de una utilidad futura".
 
-## Clase – 13/01/2026: PEAS
+## **Clase – 13/01/2026**
 
 **PEAS (Performance, Entorno, Actuadores, Sensores)**
 
@@ -55,7 +55,7 @@ En este problema se ve reflejado que aunque haya menos combinaciones, es mas com
 
 Aqui los estados serian el numero de esclavistas de un lado del rio, el numero de trabajadores sin paga de un lado del rio y el lado del rio, dandonos la operacion de 4 x 4 x 2, dando un total de `32` estados.
 
-## Clase – 14/01/2026: Propiedades y estados
+## **Clase – 14/01/2026**
 
 **Propiedades del entorno**
 
@@ -91,7 +91,7 @@ $Pr[S | a]$ = $[Pr[S = s^1 | a], ... , Pr[S = s^m | a]]$
 Esto es cuando no hay certeza absoluta. La misma acción en el mismo estado puede llevar a resultados diferentes debido al azar o a variables desconocidas.  
 Un ejemplo podria ser lanzar un dado. El estado inicial es el dado en tu mano ($S$), la acción es lanzar ($a$), pero el estado final es incierto, tienes una probabilidad de $1/6$ para cada cara. Aunque el entorno sea estático (el dado no cambia de cara mientras piensas), el resultado de la acción es aleatorio.
 
-## Clase – 15/01/2026: Agentes Inteligentes
+## **Clase – 15/01/2026**
 
 En la clase de hoy profundizamos en la estructura de los agentes y cómo interactúan con su entorno.
 
@@ -121,10 +121,16 @@ Dependiendo de la complejidad de su "cerebro", clasificamos a los agentes en:
 1. **Agentes de Reflejo Simple:** Toma decisiones basándose únicamente en lo que percibe en este preciso instante ("Si veo X, hago Y"). Ignora todo lo que pasó antes.
     $a = f(p)$
 2. **Agentes basados en el historial:** Toma decisiones considerando toda la secuencia de cosas que ha percibido desde que se encendió, no solo la actual.
-   $$a = f([p_1, p_2, \dots, p_n])$$
+   $a = f([p_1, p_2, \dots, p_n])$
 3. **Agentes basados en modelos:** Mantiene un "estado interno" (una memoria) para rastrear aspectos del mundo que no puede ver en este momento. Sabe cómo cambia el mundo por sí solo y cómo lo afectan sus acciones.
-   $$a = f_m(p)$$
+   $a = f_m(p)$
 4. **Agentes basados en metas:** No solo reacciona, sino que planea. Tiene un objetivo claro (meta) y busca la secuencia de acciones necesaria para alcanzarlo.
-   $$a = f_m(p, s)$$
+   $a = f_m(p, s)$
 5. **Agentes basados en utilidad:** Va un paso más allá de las metas. No solo quiere llegar al objetivo, sino hacerlo de la mejor manera posible (más rápido, más seguro, más barato). Maximiza una medida de "felicidad" o utilidad.
-  $$a = f_m(p, s)$$ 
+   $a = f_m(p, s)$
+
+## **Clase – 16/01/2026**
+
+notas
+
+# prueba
