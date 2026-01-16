@@ -1,6 +1,6 @@
 ### Repositorio de la clase INTELIGENCIA ARTIFICIAL
 
-Este repositorio tiene como finalidad, guardar en este, todas las notas a modo de resumen de las clases de **inteligencia artificial**  
+Este repositorio tiene como finalidad, guardar en este, todas las notas a modo de resumen de las clases de **inteligencia artificial** de sexto semestre de la Universidad de sonora.  
 Las notas guardadas en este repositorio representan lo que yo considero lo mas importante de cada clase o lo que se me quedo despues de ella.  
 **El link de la GitHub Page es:** https://ricardo050427.github.io/ia-frha/  
 Este sitio fue construido utilizando:
