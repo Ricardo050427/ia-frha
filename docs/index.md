@@ -133,7 +133,7 @@ Dependiendo de la complejidad de su "cerebro", clasificamos a los agentes en:
 
 En esta clase nos enfocamos mas en como trasncurriria el curso, viendo el siguiente cronograma:
 
-imagen
+![linea](imagenes/Gemini_Generated_Image_x5vfs2x5vfs2x5vf.png)
 
 Tabien vimos los distintos tipos de agentes que veriamos en el curso:
 
