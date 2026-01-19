@@ -131,6 +131,26 @@ Dependiendo de la complejidad de su "cerebro", clasificamos a los agentes en:
 
 ## **Clase – 16/01/2026**
 
-notas
+En esta clase nos enfocamos mas en como trasncurriria el curso, viendo el siguiente cronograma:
 
-# prueba
+imagen
+
+Tabien vimos los distintos tipos de agentes que veriamos en el curso:
+
+| Agentes reactivos| Agentes basados en metas | Modelos basados en utilidad | 
+| :--- | :--- | :--- |
+| Estocasticos, Discretos, Observable, Deterministas| Dinamico, Discretos, Observable, Deterministas | Estocasticos |
+
+Y por ultimo vimos los criterios de evalucion:
+
+**Actividades de evaluación continua (notas):** 10%  
+
+**Actividades de evaluación de conocimientos (problemarios):** 30%  
+
+**Actividades de evaluación de competencias (laboratorios):** 30%  
+
+**Exámenes:** 30%
+
+Donde se menciono que se necesita el **60%** minimo, en las actividades de evalucion de competencias para aprobar el curso.
+
+## **Clase – 17/01/2026**
