@@ -158,7 +158,7 @@ Donde se menciono que se necesita el **60%** minimo, en las actividades de evalu
 En esta clase profundizamos mas sobre el entorno, donde vimos que:
 
 $S = Estado$  
-$S = (S_1, . . ., S_n) \in D_1 x . . x D_n = S$
+$S = (S_1, . . ., S_n) \in D_1 x . . x D_n = S$  
 $a_t \in A = (a_1, . . ., a_m)$  
 $a_t \in A(s_t)$ acciones legales  
 $p_t \in \rho$ espacio de percepciones  
