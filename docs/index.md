@@ -305,7 +305,65 @@ if __name__ == "__main__":
 ```
 
 ## **Clase – 20/01/2026**
+> A partir de esta fecha, una parte de las notas esta hecha con IA.
 
+## 1. Definición de Agente y Entorno
+Un **agente** es cualquier entidad que percibe su entorno y actúa sobre él.
+* **Sensores:** Mecanismos para recibir información del entorno (percepciones).
+* **Actuadores:** Mecanismos para operar o modificar el entorno (acciones).
+* **Percepción:** El contenido de lo que captan los sensores en un instante específico.
+* **Secuencia de Percepciones:** El historial completo de todo lo percibido por el agente hasta la fecha.
+
+> **La Función del Agente:** Matemáticamente, el comportamiento del agente se describe como una función que mapea una secuencia de percepciones a una acción:
+> $$f : P^* \rightarrow A$$
+
+## 2. El Concepto de Racionalidad
+Un agente racional es aquel que elige la acción que **maximiza su medida de rendimiento esperada**, dada la evidencia aportada por la secuencia de percepciones y su conocimiento incorporado.
+
+La racionalidad depende de 4 factores:
+1.  **Medida de Rendimiento:** El criterio objetivo de éxito (¿qué queremos lograr?).
+2.  **Conocimiento del Entorno:** Lo que el agente ya sabe sobre el medio.
+3.  **Acciones:** Lo que el agente es capaz de hacer.
+4.  **Secuencia de Percepciones:** Lo que el agente ha "visto" hasta ahora.
+
+**Importante:** Racionalidad $\neq$ Omnisciencia. La racionalidad se basa en el *rendimiento esperado* (lo mejor que puedes hacer con lo que sabes), no en el resultado perfecto (que requeriría conocer el futuro).
+
+## 3. Especificación del Entorno (REAS)
+Para diseñar un agente, debemos definir primero el **Entorno de Trabajo**. Usamos el acrónimo **REAS** (en inglés PEAS).
+
+| Sigla | Concepto | Definición en Apuntes |
+| :--- | :--- | :--- |
+| **R** | **R**endimiento (Performance) | ¿Cómo medimos el éxito? |
+| **E** | **E**ntorno (Environment) | ¿En dónde opera el agente? |
+| **A** | **A**ctuadores (Actuators) | ¿Con qué actúa el agente? |
+| **S** | **S**ensores (Sensors) | ¿Con qué percibe el agente? |
+
+### Ejemplo: Sistema de Diagnóstico Médico
+* **Rendimiento:** Pacientes sanos, minimizar costos, evitar demandas.
+* **Entorno:** Paciente, hospital, personal médico.
+* **Actuadores:** Pantalla (preguntas/diagnósticos), derivaciones, recetas.
+* **Sensores:** Teclado (entrada de síntomas), historial médico digital.
+
+## 4. Tipos de Entornos
+Las propiedades del entorno determinan la dificultad del diseño del agente:
+
+* **Totalmente Observable vs. Parcialmente Observable:** ¿Los sensores detectan todo el estado relevante del mundo?
+* **Determinista vs. Estocástico:** ¿El siguiente estado del entorno está determinado completamente por el estado actual y la acción? (Si hay azar, es estocástico).
+* **Episódico vs. Secuencial:** ¿La experiencia se divide en episodios independientes (como clasificar imágenes) o cada decisión afecta a las futuras (como ajedrez)?
+* **Estático vs. Dinámico:** ¿El entorno cambia mientras el agente está "pensando"?
+* **Discreto vs. Continuo:** ¿Hay un número finito de estados/acciones o son magnitudes continuas?
+* **Agente Individual vs. Multiagente:** ¿Hay otros agentes actuando en el entorno?
+
+## 5. Estructura de los Agentes
+El **Programa del Agente** implementa la función del agente ($f$) en una arquitectura física.
+Existen 4 tipos básicos de programas:
+
+1.  **Agentes Reactivos Simples:** Responden directamente a la percepción actual (reglas *condición-acción*). No tienen memoria.
+2.  **Agentes Reactivos Basados en Modelos:** Mantienen un *estado interno* para rastrear partes del mundo que no pueden ver ahora mismo.
+3.  **Agentes Basados en Objetivos (Metas):** Utilizan información sobre un "estado deseado" para planificar sus acciones.
+4.  **Agentes Basados en Utilidad:** Tienen una "función de utilidad" interna que les permite preferir estados más felices/útiles sobre otros (útil cuando hay objetivos conflictivos).
+
+## **Clase – 21/01/2026**
 
 
 
