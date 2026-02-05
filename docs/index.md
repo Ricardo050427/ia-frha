@@ -365,5 +365,45 @@ Existen 4 tipos básicos de programas:
 
 ## **Clase – 21/01/2026**
 
+## 1. Formulación del Problema de Aprendizaje
+El aprendizaje supervisado se formaliza matemáticamente con los siguientes componentes:
 
+* **Función Objetivo ($f$):** Es la función "verdadera" que queremos descubrir.
+    * Mapea entradas a salidas: $f: \mathcal{X} \rightarrow \mathcal{Y}$.
+    * **Propiedad clave:** Existe, pero es **desconocida** para nosotros.
+* **Datos de Entrenamiento ($D$):** Una muestra de datos históricos generados por una distribución desconocida.
+    * $D = \{(x^{(1)}, y^{(1)}), \dots, (x^{(M)}, y^{(M)})\}$
+    * Donde cada $y^{(i)}$ proviene de la función objetivo (a veces con ruido): $y^{(i)} = f(x^{(i)})$.
+    * *Nota:* En tus apuntes, $M$ representa el tamaño de la muestra (número de datos).
+
+## 2. El Modelo y las Hipótesis
+Para aproximar $f$, definimos un modelo paramétrico:
+
+* **Parámetros ($\Theta$):** El conjunto de configuraciones posibles (ej. $\Theta = \mathbb{R}^k$).
+* **Conjunto de Hipótesis ($\mathcal{H}$):** Es el conjunto de todas las funciones candidatas $h$ que nuestro modelo puede generar al variar los parámetros.
+    * $h: \mathcal{X} \times \Theta \rightarrow \mathcal{Y}$
+* **Objetivo del Aprendizaje Supervisado:** Encontrar una hipótesis específica $h^* \in \mathcal{H}$ tal que sea la mejor aproximación posible a la función real:
+    $$h^* \approx f$$
+
+## 3. Teoría de la Generalización
+El desafío central no es solo aprender los datos viejos ($E_{in}$), sino predecir bien en datos nuevos ($E_{out}$).
+
+### Desigualdad de Hoeffding
+Nos da una cota probabilística que garantiza que el error en la muestra ($E_{in}$) se parece al error real de generalización ($E_{out}$), siempre que la muestra sea lo suficientemente grande.
+
+$$P(|E_{out}(h) - E_{in}(h)| > \epsilon) \le 2 e^{-2\epsilon^2 M}$$
+
+*(Nota: La fórmula exacta puede variar según si se considera una sola hipótesis o todo el conjunto de hipótesis finitas, donde se multiplicaría por el tamaño de $|\mathcal{H}|$)*.
+
+### Dimensión VC ($d_{VC}$)
+La **Dimensión Vapnik-Chervonenkis** ($d_{VC}$) es una medida de la complejidad o "capacidad" del conjunto de hipótesis $\mathcal{H}$.
+* **Interpretación práctica:** $d_{VC} \approx$ número de parámetros independientes o "grados de libertad" del modelo.
+
+### Condición de Aprendizaje
+Para que el aprendizaje sea posible (es decir, para que $E_{in} \approx E_{out}$ y no estemos simplemente memorizando/sobreajustando), debe cumplirse que la complejidad del modelo sea mucho menor que la cantidad de datos disponibles:
+
+$$d_{VC}(\mathcal{H}) \ll M \implies E_{in}(h) \approx E_{out}(h)$$
+
+* Si $d_{VC}$ es demasiado alto respecto a $M$ $\rightarrow$ **Overfitting** (Sobreajuste).
+* Si $d_{VC}$ es adecuado y $M$ es grande $\rightarrow$ **Generalización**.
 
