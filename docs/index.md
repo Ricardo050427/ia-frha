@@ -583,3 +583,35 @@ Para clasificar, usamos una función de pérdida diferente al MSE (Error Cuadrá
     * Si el signo es incorrecto, el error crece proporcionalmente.
 * **Error Total ($E_{in}$):**
     $$E_{in}(w, b) = \frac{1}{M} \sum_{i=1}^{M} loss(y^{(i)}, \text{sign}(w^T x^{(i)} + b))$$
+
+## **Clase – 29/01/2026**
+
+**Tema: Regresión Logística y Probabilidad**
+
+**1. Definición del Modelo**
+A diferencia de la regresión lineal, aquí queremos estimar la probabilidad de que la salida $Y$ sea 1, dado el vector de entrada $X$.
+* **Objetivo:** Calcular $P(Y=1 | x)$.
+* **Hipótesis:**
+    $$a = \sigma(z)$$
+    * Donde $z$ es la combinación lineal: $z = w^T x + b = \sum w_i x_i + b$.
+    * Y $\sigma(z)$ es la función de activación (Sigmoide).
+
+**2. Función Sigmoide**
+Transforma cualquier valor real $z$ en un valor entre 0 y 1 (interpretado como probabilidad).
+$$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+
+**3. Función de Costo (Binary Cross-Entropy)**
+Para clasificación, el Error Cuadrático Medio (MSE) no es adecuado (no es convexo con la sigmoide). Usamos la **Pérdida Logística** (Log Loss).
+
+* **Loss por muestra:**
+    $$Loss(a, y) = -y \log(a) - (1-y) \log(1-a)$$
+    * Si $y=1$: El costo es $-\log(a)$ (queremos $a \approx 1$).
+    * Si $y=0$: El costo es $-\log(1-a)$ (queremos $a \approx 0$).
+
+* **Error Total ($E_{in}$):**
+    $$E_{in}(w, b) = \frac{1}{M} \sum_{i=1}^{M} Loss(a^{(i)}, y^{(i)})$$
+
+**4. Gradiente para Optimización**
+Para minimizar el error, calculamos las derivadas parciales (el gradiente es sorprendentemente similar al de regresión lineal debido a la derivada de la sigmoide):
+
+$$\frac{\partial E_{in}}{\partial w_j} = \frac{1}{M} \sum_{i=1}^{M} (a^{(i)} - y^{(i)}) x_j^{(i)}$$
