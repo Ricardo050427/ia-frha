@@ -419,3 +419,43 @@ $$d_{VC}(\mathcal{H}) \ll M \implies E_{in}(h) \approx E_{out}(h)$$
 * Si $d_{VC}$ es demasiado alto respecto a $M$ $\rightarrow$ **Overfitting** (Sobreajuste).
 * Si $d_{VC}$ es adecuado y $M$ es grande $\rightarrow$ **Generalización**.
 
+## **Clase – 23/01/2026**
+
+**Tema: Regresión Lineal y Minimización del Error**
+
+**1. Definición de Variables**
+En este modelo de aprendizaje supervisado, trabajamos con los siguientes conjuntos de datos:
+* **Entrada ($x$):** Un vector de características en $\mathbb{R}^n$.
+    $$x^{(i)} \in \mathbb{R}^n$$
+* **Salida ($y$):** Un valor escalar real (regresión).
+    $$y^{(i)} \in \mathbb{R}$$
+* **Conjunto de Datos:** Una muestra de tamaño $M$.
+
+**2. Hipótesis (El Modelo)**
+Definimos nuestra hipótesis $h_\theta(x)$ como una combinación lineal de las entradas (también conocida como perceptrón lineal o regresión lineal):
+
+$$h_\theta(x) = w_1 x_1 + w_2 x_2 + \dots + w_n x_n + b$$
+
+Vectorialmente, si definimos el vector de pesos $w$ y el vector de características $x$:
+$$h_\theta(x) = \sum_{j=1}^{n} w_j x_j + b = w^T x + b$$
+
+* Donde $w \in \mathbb{R}^n$ (pesos) y $b \in \mathbb{R}$ (sesgo o bias).
+
+**3. Objetivo del Aprendizaje**
+Buscamos una hipótesis $h^*$ tal que el error dentro de la muestra ($E_{in}$) sea mínimo, esperando que esto garantice un bajo error fuera de la muestra ($E_{out}$):
+
+$$E_{in}(h^*) \approx E_{out}(h^*)$$
+
+Matemáticamente, buscamos los parámetros óptimos $\theta^* = \{w^*, b^*\}$ que minimizan la función de costo:
+
+$$\theta^* = \arg \min_{\theta} E_{in}(h_\theta)$$
+
+**4. Función de Costo: Error Cuadrático Medio (MSE)**
+Para la regresión lineal, utilizamos el **Mean Squared Error (MSE)** como medida de rendimiento. El objetivo es minimizar la media de los cuadrados de las diferencias entre la predicción y el valor real:
+
+$$w^*, b^* = \arg \min_{w, b} \frac{1}{M} \sum_{i=1}^{M} \frac{1}{2} (y^{(i)} - h_{w,b}(x^{(i)}))^2$$
+
+Sustituyendo la hipótesis:
+
+$$w^*, b^* = \arg \min_{w, b} \frac{1}{M} \sum_{i=1}^{M} \frac{1}{2} (y^{(i)} - (w^T x^{(i)} + b))^2$$
+
