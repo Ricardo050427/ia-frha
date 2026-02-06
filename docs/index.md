@@ -307,7 +307,8 @@ if __name__ == "__main__":
 ## **Clase – 20/01/2026**
 > A partir de esta fecha, una parte de las notas esta hecha con IA.
 
-## 1. Definición de Agente y Entorno
+En esta clase recalcamos mas la definición de Agente y Entorno.
+   
 Un **agente** es cualquier entidad que percibe su entorno y actúa sobre él.
 * **Sensores:** Mecanismos para recibir información del entorno (percepciones).
 * **Actuadores:** Mecanismos para operar o modificar el entorno (acciones).
@@ -317,7 +318,8 @@ Un **agente** es cualquier entidad que percibe su entorno y actúa sobre él.
 > **La Función del Agente:** Matemáticamente, el comportamiento del agente se describe como una función que mapea una secuencia de percepciones a una acción:
 > $$f : P^* \rightarrow A$$
 
-## 2. El Concepto de Racionalidad
+El Concepto de Racionalidad
+   
 Un agente racional es aquel que elige la acción que **maximiza su medida de rendimiento esperada**, dada la evidencia aportada por la secuencia de percepciones y su conocimiento incorporado.
 
 La racionalidad depende de 4 factores:
@@ -328,7 +330,8 @@ La racionalidad depende de 4 factores:
 
 **Importante:** Racionalidad $\neq$ Omnisciencia. La racionalidad se basa en el *rendimiento esperado* (lo mejor que puedes hacer con lo que sabes), no en el resultado perfecto (que requeriría conocer el futuro).
 
-## 3. Especificación del Entorno (REAS)
+Especificación del Entorno (REAS).
+   
 Para diseñar un agente, debemos definir primero el **Entorno de Trabajo**. Usamos el acrónimo **REAS** (en inglés PEAS).
 
 | Sigla | Concepto | Definición en Apuntes |
@@ -338,13 +341,15 @@ Para diseñar un agente, debemos definir primero el **Entorno de Trabajo**. Usam
 | **A** | **A**ctuadores (Actuators) | ¿Con qué actúa el agente? |
 | **S** | **S**ensores (Sensors) | ¿Con qué percibe el agente? |
 
-### Ejemplo: Sistema de Diagnóstico Médico
+Ejemplo: Sistema de Diagnóstico Médico.
+
 * **Rendimiento:** Pacientes sanos, minimizar costos, evitar demandas.
 * **Entorno:** Paciente, hospital, personal médico.
 * **Actuadores:** Pantalla (preguntas/diagnósticos), derivaciones, recetas.
 * **Sensores:** Teclado (entrada de síntomas), historial médico digital.
 
-## 4. Tipos de Entornos
+4. Tipos de Entornos.
+   
 Las propiedades del entorno determinan la dificultad del diseño del agente:
 
 * **Totalmente Observable vs. Parcialmente Observable:** ¿Los sensores detectan todo el estado relevante del mundo?
@@ -354,7 +359,8 @@ Las propiedades del entorno determinan la dificultad del diseño del agente:
 * **Discreto vs. Continuo:** ¿Hay un número finito de estados/acciones o son magnitudes continuas?
 * **Agente Individual vs. Multiagente:** ¿Hay otros agentes actuando en el entorno?
 
-## 5. Estructura de los Agentes
+Estructura de los Agentes.
+
 El **Programa del Agente** implementa la función del agente ($f$) en una arquitectura física.
 Existen 4 tipos básicos de programas:
 
@@ -365,7 +371,8 @@ Existen 4 tipos básicos de programas:
 
 ## **Clase – 21/01/2026**
 
-## 1. Formulación del Problema de Aprendizaje
+Formulación del Problema de Aprendizaje.
+
 El aprendizaje supervisado se formaliza matemáticamente con los siguientes componentes:
 
 * **Función Objetivo ($f$):** Es la función "verdadera" que queremos descubrir.
@@ -376,7 +383,8 @@ El aprendizaje supervisado se formaliza matemáticamente con los siguientes comp
     * Donde cada $y^{(i)}$ proviene de la función objetivo (a veces con ruido): $y^{(i)} = f(x^{(i)})$.
     * *Nota:* En tus apuntes, $M$ representa el tamaño de la muestra (número de datos).
 
-## 2. El Modelo y las Hipótesis
+El Modelo y las Hipótesis.
+
 Para aproximar $f$, definimos un modelo paramétrico:
 
 * **Parámetros ($\Theta$):** El conjunto de configuraciones posibles (ej. $\Theta = \mathbb{R}^k$).
@@ -385,21 +393,25 @@ Para aproximar $f$, definimos un modelo paramétrico:
 * **Objetivo del Aprendizaje Supervisado:** Encontrar una hipótesis específica $h^* \in \mathcal{H}$ tal que sea la mejor aproximación posible a la función real:
     $$h^* \approx f$$
 
-## 3. Teoría de la Generalización
+Teoría de la Generalización.
+
 El desafío central no es solo aprender los datos viejos ($E_{in}$), sino predecir bien en datos nuevos ($E_{out}$).
 
-### Desigualdad de Hoeffding
+**Desigualdad de Hoeffding**  
+
 Nos da una cota probabilística que garantiza que el error en la muestra ($E_{in}$) se parece al error real de generalización ($E_{out}$), siempre que la muestra sea lo suficientemente grande.
 
 $$P(|E_{out}(h) - E_{in}(h)| > \epsilon) \le 2 e^{-2\epsilon^2 M}$$
 
 *(Nota: La fórmula exacta puede variar según si se considera una sola hipótesis o todo el conjunto de hipótesis finitas, donde se multiplicaría por el tamaño de $|\mathcal{H}|$)*.
 
-### Dimensión VC ($d_{VC}$)
+Dimensión VC ($d_{VC}$)
+
 La **Dimensión Vapnik-Chervonenkis** ($d_{VC}$) es una medida de la complejidad o "capacidad" del conjunto de hipótesis $\mathcal{H}$.
 * **Interpretación práctica:** $d_{VC} \approx$ número de parámetros independientes o "grados de libertad" del modelo.
 
-### Condición de Aprendizaje
+Condición de Aprendizaje.
+
 Para que el aprendizaje sea posible (es decir, para que $E_{in} \approx E_{out}$ y no estemos simplemente memorizando/sobreajustando), debe cumplirse que la complejidad del modelo sea mucho menor que la cantidad de datos disponibles:
 
 $$d_{VC}(\mathcal{H}) \ll M \implies E_{in}(h) \approx E_{out}(h)$$
