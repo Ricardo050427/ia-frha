@@ -459,3 +459,31 @@ Sustituyendo la hipótesis:
 
 $$w^*, b^* = \arg \min_{w, b} \frac{1}{M} \sum_{i=1}^{M} \frac{1}{2} (y^{(i)} - (w^T x^{(i)} + b))^2$$
 
+## **Clase – 26/01/2026**
+
+**Tema: Hipótesis y Optimización**
+
+**1. Definiciones y Espacio de Hipótesis**
+* **$\mathcal{H}$:** Conjunto de hipótesis posibles.
+* **Entrada:** $X = (X_1, \dots, X_n) \in \mathbb{R}^n$.
+* **Salida:** $Y \in \mathbb{R}$.
+* **Hipótesis:**
+    $$h_\theta(X) = w_1 X_1 + \dots + w_n X_n + b$$
+* **Parámetros:**
+    $$\theta = (w_1, \dots, w_n, b) \in \mathbb{R}^{n+1}$$
+
+**2. Optimización (Ejemplo Gráfico)**
+Para entender cómo encontrar el mínimo, analizamos una función genérica $f(x)$ convexa.
+
+* **Función:** $f: \mathbb{R} \rightarrow \mathbb{R}$ (Representada en el gráfico como una curva en forma de "U").
+* **Objetivo:** Encontrar $x$ tal que $f(x)$ sea mínimo.
+
+**Proceso Iterativo (Descenso):**
+Partimos de un punto inicial $X_0$ y nos movemos en pasos ($X_0, X_1, \dots$) en dirección contraria a la pendiente.
+
+**Regla de Actualización:**
+$$\theta \leftarrow \theta_k - \eta f'(\theta_k)$$
+
+* **$X_k$:** Valor actual.
+* **$f'(X_k)$:** Derivada (pendiente) en el punto actual.
+* **$\eta$:** (Eta) Tamaño del paso o tasa de aprendizaje.
