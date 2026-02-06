@@ -487,3 +487,67 @@ $$\theta \leftarrow \theta_k - \eta f'(\theta_k)$$
 * **$X_k$:** Valor actual.
 * **$f'(X_k)$:** Derivada (pendiente) en el punto actual.
 * **$\eta$:** (Eta) Tamaño del paso o tasa de aprendizaje.
+
+## **Clase – 27/01/2026**
+
+**Tema: Implementación de Regresión Lineal (Descenso del Gradiente)**
+
+**1. Definición de la Función**
+Analizamos la implementación del algoritmo en Python utilizando álgebra lineal (vectorización).
+* **Entradas:**
+    * `X`, `Y`: Datos de entrenamiento.
+    * `w0`, `b0`: Parámetros iniciales (pesos y sesgo).
+    * `lr`: Tasa de aprendizaje ($\eta$).
+    * `max_epochs`: Número máximo de iteraciones.
+    * `e_tol`: Tolerancia de error (criterio de parada).
+
+**2. Predicción (Forward Pass)**
+Calculamos la hipótesis $h_\theta(X)$ para todos los datos simultáneamente usando producto matricial.
+* **Fórmula:** $h_\theta(X) = X \cdot w + b$
+* **Código:** `Y_est = X @ w + b`
+
+**3. Cálculo del Error**
+Determinamos la diferencia entre el valor real y el estimado y guardamos el historial del MSE.
+* **Fórmula:** $Error = Y - h_\theta(X)$
+* **Código:** `Err = Y - Y_est`
+
+**4. Cálculo del Gradiente**
+Calculamos las derivadas parciales de la función de costo.
+* **Pesos ($w$):** $\nabla_w J = -\frac{1}{M} X^T (Y - h_\theta(X))$
+* **Sesgo ($b$):** Promedio del error.
+
+**5. Actualización de Parámetros**
+Ajustamos los pesos en dirección opuesta al gradiente.
+* **Fórmulas:**
+    $$w \leftarrow w - \eta \nabla_w J$$
+    $$b \leftarrow b - \eta \nabla_b J$$
+
+**6. Código Fuente (Python)**
+
+```python
+import numpy as np
+
+def dg_lin(X, Y, w0, b0, lr, max_epochs, e_tol):
+    M = X.shape[0]
+
+    w = w0.copy()
+    b = b0.copy()
+    hist = []
+
+    for _ in range(max_epochs):
+        Y_est = X @ w + b
+        
+        Err = Y - Y_est
+        
+        hist.append(np.square(Err).mean())
+        
+        grad_w = -(1/M) * (X.T @ Err)
+        d_b = Err.mean()
+        
+        w -= lr * grad_w
+        b -= lr * d_b
+        
+        if np.abs(grad_w).max() < e_tol:
+            break
+            
+    return w, b, hist
