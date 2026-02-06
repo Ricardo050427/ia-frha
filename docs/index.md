@@ -551,3 +551,35 @@ def dg_lin(X, Y, w0, b0, lr, max_epochs, e_tol):
             break
             
     return w, b, hist
+```
+
+## **Clase – 28/01/2026**
+
+**Tema: Teoría PAC, Regresión Polinomial y Perceptrón**
+
+**1. Aprendizaje PAC (Probably Approximately Correct)**
+Retomando la teoría de generalización, buscamos garantías de que nuestro modelo funcione bien fuera de los datos de entrenamiento.
+* **Objetivo:** Queremos que la diferencia entre el error real ($E_{out}$) y el error de entrenamiento ($E_{in}$) sea pequeña con alta probabilidad.
+* **Fórmula (Cota de Generalización):**
+    $$Pr(|E_{out} - E_{in}| > \epsilon) \le \delta$$
+    *(Buscamos minimizar $\delta$, la probabilidad de fallo).*
+
+**2. Regresión Polinomial (Feature Engineering)**
+Aunque usamos modelos lineales, podemos ajustar curvas no lineales transformando las entradas.
+* **Ejemplo:** En lugar de solo usar $x$, creamos nuevas características elevadas a potencias.
+    * Lineal simple: $y = w_0 x + b$
+    * Polinomial (Cúbica): $\hat{y} = w_1 x_1 + w_2 x_2^2 + w_3 x_3^3 + b$
+* Esto permite al modelo lineal aprender fronteras más complejas.
+
+**3. El Perceptrón Simple**
+Introducimos el modelo básico para clasificación binaria.
+* **Esquema:** Entradas ($X_1 \dots X_n$) $\rightarrow$ Pesos ($W_1 \dots W_n$) $\rightarrow$ Suma Ponderada $\rightarrow$ Función Signo.
+
+**4. Función de Costo del Perceptrón**
+Para clasificar, usamos una función de pérdida diferente al MSE (Error Cuadrático), llamada "Perceptron Loss" o similar a Hinge Loss.
+* **Definición de Loss (por dato):**
+    $$loss(y, \hat{y}) = \max(-y \cdot \hat{y}, 0)$$
+    * Si el signo es correcto ($y$ y $\hat{y}$ coinciden), $-y\hat{y}$ es negativo $\rightarrow$ max es 0 (No hay error).
+    * Si el signo es incorrecto, el error crece proporcionalmente.
+* **Error Total ($E_{in}$):**
+    $$E_{in}(w, b) = \frac{1}{M} \sum_{i=1}^{M} loss(y^{(i)}, \text{sign}(w^T x^{(i)} + b))$$
