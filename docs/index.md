@@ -578,11 +578,11 @@ Introducimos el modelo básico para clasificación binaria.
 **4. Función de Costo del Perceptrón**
 Para clasificar, usamos una función de pérdida diferente al MSE (Error Cuadrático), llamada "Perceptron Loss" o similar a Hinge Loss.
 * **Definición de Loss (por dato):**
-    $$loss(y, \hat{y}) = \max(-y \cdot \hat{y}, 0)$$
+    $loss(y, \hat{y}) = \max(-y \cdot \hat{y}, 0)$
     * Si el signo es correcto ($y$ y $\hat{y}$ coinciden), $-y\hat{y}$ es negativo $\rightarrow$ max es 0 (No hay error).
     * Si el signo es incorrecto, el error crece proporcionalmente.
 * **Error Total ($E_{in}$):**
-    $$E_{in}(w, b) = \frac{1}{M} \sum_{i=1}^{M} loss(y^{(i)}, \text{sign}(w^T x^{(i)} + b))$$
+    $E_{in}(w, b) = \frac{1}{M} \sum_{i=1}^{M} loss(y^{(i)}, \text{sign}(w^T x^{(i)} + b))$
 
 ## **Clase – 29/01/2026**
 
@@ -592,13 +592,13 @@ Para clasificar, usamos una función de pérdida diferente al MSE (Error Cuadrá
 A diferencia de la regresión lineal, aquí queremos estimar la probabilidad de que la salida $Y$ sea 1, dado el vector de entrada $X$.
 * **Objetivo:** Calcular $P(Y=1 | x)$.
 * **Hipótesis:**
-    $$a = \sigma(z)$$
+    $da = \sigma(z)$
     * Donde $z$ es la combinación lineal: $z = w^T x + b = \sum w_i x_i + b$.
     * Y $\sigma(z)$ es la función de activación (Sigmoide).
 
 **2. Función Sigmoide**
 Transforma cualquier valor real $z$ en un valor entre 0 y 1 (interpretado como probabilidad).
-$$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+$\sigma(z) = \frac{1}{1 + e^{-z}}$
 
 **3. Función de Costo (Binary Cross-Entropy)**
 Para clasificación, el Error Cuadrático Medio (MSE) no es adecuado (no es convexo con la sigmoide). Usamos la **Pérdida Logística** (Log Loss).
@@ -609,9 +609,102 @@ Para clasificación, el Error Cuadrático Medio (MSE) no es adecuado (no es conv
     * Si $y=0$: El costo es $-\log(1-a)$ (queremos $a \approx 0$).
 
 * **Error Total ($E_{in}$):**
-    $$E_{in}(w, b) = \frac{1}{M} \sum_{i=1}^{M} Loss(a^{(i)}, y^{(i)})$$
+    $E_{in}(w, b) = \frac{1}{M} \sum_{i=1}^{M} Loss(a^{(i)}, y^{(i)})$
 
 **4. Gradiente para Optimización**
 Para minimizar el error, calculamos las derivadas parciales (el gradiente es sorprendentemente similar al de regresión lineal debido a la derivada de la sigmoide):
 
-$$\frac{\partial E_{in}}{\partial w_j} = \frac{1}{M} \sum_{i=1}^{M} (a^{(i)} - y^{(i)}) x_j^{(i)}$$
+$\frac{\partial E_{in}}{\partial w_j} = \frac{1}{M} \sum_{i=1}^{M} (a^{(i)} - y^{(i)}) x_j^{(i)}$
+
+## **Clase – 03/02/2026**
+
+**Tema: Demostración del Gradiente para Regresión Logística**
+
+**1. Objetivo**
+Queremos encontrar la derivada de la función de costo $E_{in}$ respecto a los pesos $w_j$ para poder aplicar el Descenso del Gradiente.
+* **Función de Costo (Log Loss):**
+    $E_{in} = -\frac{1}{M} \sum_{i=1}^{M} [y^{(i)} \ln(a^{(i)}) + (1-y^{(i)}) \ln(1-a^{(i)})]$
+* **Hipótesis (Sigmoide):** $a = \sigma(z) = \frac{1}{1+e^{-z}}$, donde $z = w^T x + b$.
+
+**2. Aplicación de la Regla de la Cadena**
+Para derivar respecto a un peso $w_j$, descomponemos la derivada en tres partes:
+$\frac{\partial E_{in}}{\partial w_j} = \frac{\partial E_{in}}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w_j}$
+
+**3. Desarrollo de las Derivadas Parciales**
+
+* **Paso A: Derivada del Costo respecto a la activación ($a$)**
+    Derivando el término dentro de la sumatoria:
+    $\frac{\partial Loss}{\partial a} = -\frac{y}{a} + \frac{1-y}{1-a} = \frac{-y(1-a) + a(1-y)}{a(1-a)} = \frac{a-y}{a(1-a)}$
+
+* **Paso B: Derivada de la Sigmoide respecto a la entrada lineal ($z$)**
+    Una propiedad clave de la función sigmoide es que su derivada se puede expresar en términos de sí misma:
+    $\frac{\partial a}{\partial z} = a(1-a)$
+
+* **Paso C: Derivada de la entrada lineal ($z$) respecto al peso ($w_j$)**
+    Como $z = w_1 x_1 + \dots + w_j x_j + \dots$, la derivada es simplemente la entrada correspondiente:
+    $\frac{\partial z}{\partial w_j} = x_j$
+
+**4. Simplificación Final**
+Multiplicamos las tres partes (observa cómo se cancelan los términos del denominador):
+$\frac{\partial E_{in}}{\partial w_j} = \left( \frac{a-y}{a(1-a)} \right) \cdot (a(1-a)) \cdot x_j$
+
+$= (a - y) \cdot x_j$
+
+**5. Resultado (Gradiente Promedio)**
+Agregamos nuevamente la sumatoria y el promedio sobre $M$ muestras:
+$\frac{\partial E_{in}}{\partial w} = \frac{1}{M} \sum_{i=1}^{M} (a^{(i)} - y^{(i)}) x^{(i)}$
+
+## **Clase – 04/02/2026**
+
+**Tema: Regularización y Multiplicadores de Lagrange**
+
+**1. Planteamiento del Problema: Restricción de Complejidad**
+En esta clase abordamos un problema fundamental: ¿Cómo evitamos que nuestro modelo se "aprenda de memoria" los datos (overfitting)?
+Vimos que los modelos con pesos ($w$) muy grandes tienden a generar curvas muy oscilantes y complejas que se ajustan al ruido. Por lo tanto, decidimos imponer una **restricción** a nuestro problema de optimización original.
+
+Ya no solo queremos minimizar el error $E_{in}$, sino que queremos hacerlo manteniendo los pesos pequeños. Matemáticamente, planteamos el problema así:
+
+$w^*, b^* = \arg \min_{w,b} E_{in}(w,b)$
+**Sujeto a la restricción:**
+$\sum_{j=1}^{n} w_j^2 \le C$
+
+Esto significa que la "fuerza" total de nuestros pesos (su norma L2) no puede superar un cierto presupuesto $C$.
+
+**2. Método de los Multiplicadores de Lagrange**
+Para resolver este problema de optimización con restricciones, recurrimos a la herramienta matemática de los **Multiplicadores de Lagrange**.
+La idea es convertir la restricción "dura" en una penalización suave dentro de la función de costo.
+
+Creamos una nueva función objetivo llamada **Lagrangiano** ($\mathcal{L}$), que suma nuestro error original más un término de penalización controlado por una variable $\lambda$ (lambda):
+
+$\mathcal{L}(w, b, \lambda) = E_{in}(w, b) + \lambda (w^T w - C)$
+
+* Si $\lambda = 0$, volvemos al problema original (sin restricción).
+* Si $\lambda$ es grande, penalizamos mucho tener pesos grandes.
+
+**3. Derivación del Gradiente Regularizado**
+Para encontrar el mínimo, derivamos esta nueva función respecto a los pesos ($w$) e igualamos a cero. Al hacerlo, observamos algo interesante en la relación de fuerzas:
+
+$\nabla_w \mathcal{L} = \nabla_w E_{in} + \nabla_w (\lambda w^T w) = 0$
+
+Sabemos que la derivada de $w^T w$ es $2w$, así que obtenemos:
+
+$\nabla E_{in}(w) + 2\lambda w = 0$
+
+De aquí despejamos y encontramos una relación de equilibrio:
+$- \nabla E_{in}(w) = 2\lambda w$
+
+**4. Interpretación Geométrica y "Weight Decay"**
+Analizamos qué significa esta ecuación. El término $- \nabla E_{in}$ es la fuerza que nos empuja hacia el mínimo del error, mientras que $2\lambda w$ es una fuerza que nos empuja hacia el origen (hacia pesos cero).
+En el equilibrio, estas dos fuerzas se contrarrestan.
+
+Cuando aplicamos esto en el Descenso del Gradiente, nuestra regla de actualización cambia. Ahora, en cada paso, no solo reducimos el error, sino que también "encogemos" los pesos un poco:
+
+$w_{nuevo} = w_{viejo} - \eta (\nabla E_{in} + 2\lambda w_{viejo})$
+
+Esto se conoce comúnmente como **Weight Decay** (decaimiento de pesos), porque en cada iteración los pesos se multiplican por un factor menor a 1, haciéndose más pequeños a menos que el gradiente del error sea muy fuerte para justificarlo.
+
+**5. Sesgo Cognitivo (Inductive Bias)**
+Finalmente, cerramos la clase mencionando un concepto teórico importante: el **Sesgo Cognitivo** o Sesgo Inductivo.
+Discutimos que, ante múltiples hipótesis que explican los datos igual de bien, preferimos la más simple (Navaja de Ockham).
+* La regularización ($w^T w \le C$) es la forma matemática de inyectar este "sesgo" o preferencia en nuestro modelo.
+* Le estamos diciendo al algoritmo: "A menos que los datos demuestren fuertemente lo contrario, asume que la función verdadera es suave y simple".
