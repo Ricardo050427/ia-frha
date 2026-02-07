@@ -708,3 +708,57 @@ Finalmente, cerramos la clase mencionando un concepto teórico importante: el **
 Discutimos que, ante múltiples hipótesis que explican los datos igual de bien, preferimos la más simple (Navaja de Ockham).
 * La regularización ($w^T w \le C$) es la forma matemática de inyectar este "sesgo" o preferencia en nuestro modelo.
 * Le estamos diciendo al algoritmo: "A menos que los datos demuestren fuertemente lo contrario, asume que la función verdadera es suave y simple".
+
+## **Clase – 05/02/2026**
+
+**Tema: Árboles de Decisión**
+
+**1. Definición del Problema**
+Nos planteamos el objetivo de aprender una función objetivo $f: X \rightarrow Y$ a partir de un conjunto de datos $D = \{(X^{(1)}, Y^{(1)}), \dots, (X^{(M)}, Y^{(M)})\}$.
+A diferencia de la regresión logística donde buscábamos pesos, aquí buscamos construir una estructura de árbol $h_{\theta}$ que divida el espacio de características mediante reglas lógicas.
+
+**2. Estructura de Datos**
+Visualizamos nuestros datos como una tabla donde:
+* Cada fila es un ejemplo.
+* Cada columna es una característica (feature).
+* La última columna es la etiqueta (clase) que queremos predecir.
+
+**3. Algoritmo Recursivo (ID3 / C4.5)**
+Analizamos el pseudocódigo para generar el árbol. La idea central es dividir el problema en subproblemas más pequeños (divide y vencerás).
+
+El algoritmo funciona de la siguiente manera:
+1.  **Caso Base:** Si todos los ejemplos en nuestro nodo actual son de la misma clase (o si ya no nos quedan características para dividir), convertimos este nodo en una **Hoja** (nodo terminal) y paramos.
+2.  **Selección:** Si no, elegimos la "mejor" característica (`var`) para dividir los datos. (Más adelante veremos qué criterio matemático usamos para definir "mejor").
+3.  **Expansión:** Para cada valor posible de esa característica, creamos una rama nueva.
+4.  **Recursión:** Repetimos el proceso para cada rama con el subconjunto de datos filtrado.
+
+**4. Pseudocódigo Analizado**
+Transcribimos la lógica que vimos en clase a una función estilo Python:
+
+```python
+def genera_arbol(features, X, Y, nodo):
+    # 1. Casos Base (Criterios de parada)
+    # Si todos los Y son iguales o features está vacío
+    if todos_misma_clase(Y) or len(features) == 0:
+        nodo.terminal = True
+        nodo.clase = clase_mas_comun(Y)
+        return
+
+    # 2. Elegir el mejor atributo para dividir
+    var = escoge_feature(features, X, Y)
+    
+    # 3. Quitar atributo usado para no repetirlo en esta rama
+    nuevas_features = features.remove(var)
+
+    # 4. Generar ramas recursivamente
+    for valor in obtener_valores_unicos(var):
+        # Filtramos los datos donde la variable tiene ese valor
+        Xn, Yn = separa_datos(X, Y, var, valor)
+        
+        # Creamos un nuevo nodo hijo conectado por esa rama
+        nn = crea_hija(nodo, valor)
+        
+        # Llamada recursiva
+        genera_arbol(nuevas_features, Xn, Yn, nn)
+```
+
