@@ -379,8 +379,8 @@ El aprendizaje supervisado se formaliza matemáticamente con los siguientes comp
     * Mapea entradas a salidas: $f: \mathcal{X} \rightarrow \mathcal{Y}$.
     * **Propiedad clave:** Existe, pero es **desconocida** para nosotros.
 * **Datos de Entrenamiento ($D$):** Una muestra de datos históricos generados por una distribución desconocida.
-    * $D = \{(x^{(1)}, y^{(1)}), \dots, (x^{(M)}, y^{(M)})\}$
-    * Donde cada $y^{(i)}$ proviene de la función objetivo (a veces con ruido): $y^{(i)} = f(x^{(i)})$.
+    * $$D = \{(x^{(1)}, y^{(1)}), \dots, (x^{(M)}, y^{(M)})\}$$
+    * Donde cada $$y^{(i)}$ proviene de la función objetivo (a veces con ruido): $y^{(i)} = f(x^{(i)})$$.
     * *Nota:* En tus apuntes, $M$ representa el tamaño de la muestra (número de datos).
 
 El Modelo y las Hipótesis.
