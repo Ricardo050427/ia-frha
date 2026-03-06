@@ -1,14 +1,15 @@
 site_name: ia-frha
+
 theme:
   name: material
   palette:
-    scheme: slate # Modo oscuro
+    scheme: slate
     primary: deep purple
   features:
     - navigation.sections
     - content.code.copy
 
-  markdown_extensions:
+markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -16,6 +17,7 @@ theme:
       pygments_style: dracula
   - pymdownx.inlinehilite
   - pymdownx.superfences
+  - pymdownx.arithmatex
 
 extra_javascript:
   - javascripts/mathjax.js
