@@ -17,7 +17,9 @@ markdown_extensions:
       pygments_style: dracula
   - pymdownx.inlinehilite
   - pymdownx.superfences
-  - pymdownx.arithmatex
+
+  - pymdownx.arithmatex:
+      generic: true
 
 extra_javascript:
   - javascripts/mathjax.js
