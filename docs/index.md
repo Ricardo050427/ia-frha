@@ -764,3 +764,792 @@ def genera_arbol(features, X, Y, nodo):
         genera_arbol(nuevas_features, Xn, Yn, nn)
 ```
 
+
+## **Clase – 06/02/2026**
+
+**Tema: Entropía, Ganancia de Información y Métodos de Ensamble**
+
+**1. Entropía (Criterio para "escoge_feature")**
+Retomamos el algoritmo de árboles de decisión. La pregunta clave era: ¿cómo elegimos la "mejor" característica para dividir? La respuesta es usando la **Entropía**, una medida de la incertidumbre o desorden de un conjunto de datos.
+
+* **Fórmula de Entropía:**
+    $$H(Y) = -\sum_{k} p_k \log_2(p_k)$$
+    Donde $p_k$ es la proporción de ejemplos de la clase $k$.
+* **Interpretación:** Si todos los datos pertenecen a la misma clase, la entropía es 0 (máximo orden). Si están repartidos uniformemente, la entropía es máxima.
+
+**2. Ganancia de Información**
+La **ganancia de información** nos dice cuánta entropía reducimos al dividir según una variable $X_j$:
+$$Ganancia(Y, X_j) = H(Y) - H(Y | X_j)$$
+
+* **Criterio:** Elegimos la variable que **maximice** la ganancia de información.
+* Aunque la ganancia sea 0, al menos debemos dar un paso más.
+
+**3. Particiones en Variables Continuas**
+Cuando una variable es continua, probamos particiones donde haya cambio de clase entre datos consecutivos y calculamos la ganancia para cada una.
+
+**4. Métodos de Ensamble (Bagging)**
+Método de aprendizaje por conjuntos que se emplea comúnmente para reducir la varianza dentro de un conjunto de datos ruidoso. La idea es entrenar múltiples árboles con submuestras aleatorias y votar por mayoría.
+
+## **Clase – 09/02/2026**
+
+**Tema: Problema de Búsqueda**
+
+**1. Definición Formal**
+Dejamos aprendizaje supervisado y comenzamos con **agentes basados en metas**. Los componentes formales del problema de búsqueda son:
+* **Espacio de estados:** $S = \{S_1, \dots\}$, cardinalidad finita.
+* **Acciones:** $A = \{a_1, \dots, a_m\}$.
+* **Acciones legales:** $A(s) \subseteq A$ en el estado $s$.
+* **Función sucesor:** $succ: S \times A \rightarrow S$.
+* **Costo local:** $costo\_local(s, a)$ es el costo de aplicar $a$ en $s$.
+* **Estado inicial:** $S_0 \in S$ y **estados finales:** $S_f \subseteq S$.
+
+**2. Definición de un Plan**
+Un plan es una secuencia $S_0, a_0, c_0, S_1, a_1, c_1, \dots$ donde $S_{i+1} = succ(S_i, a_i)$ y el último estado es terminal. El **objetivo** es encontrar el plan con $C = \sum c_i$ mínimo.
+
+**3. Ejemplo: Puzzle**
+* $S = \{S_0, \dots, S_{15}\}$, permutaciones de $\{0, \dots, 15\}$.
+* Acciones: mover el espacio vacío (arriba, abajo, izquierda, derecha).
+* Costo local = 1 por movimiento.
+
+## **Clase – 10/02/2026**
+
+**Tema: Implementación del Problema de Búsqueda**
+
+**1. Clase SearchPb**
+Definimos una clase base abstracta para representar cualquier problema de búsqueda:
+
+```python
+class SearchPb(object):
+    def __init__(self, s_ini):
+        self.s0 = s_ini
+
+    def acciones(self, s):
+        raise NotImplementedError
+
+    def sucesor(self, s, a):
+        raise NotImplementedError
+
+    def terminal(self, s):
+        raise NotImplementedError
+```
+
+**2. Torres de Hanoi como SearchPb**
+Implementamos las Torres de Hanoi donde las acciones son pares como `'AB'`, `'AC'`, etc. y una acción es legal si el disco origen es más pequeño que el destino. El sucesor cambia la posición del disco y el costo local es 1.
+
+**3. Puzzle como SearchPb**
+Implementamos el puzzle deslizante donde el estado es una tupla, las acciones dependen de la posición del espacio vacío (0) y el sucesor intercambia posiciones.
+
+## **Clase – 12/02/2026**
+
+**Tema: NodoSearch y Búsqueda Genérica**
+
+**1. Nodo de Búsqueda**
+Para explorar el espacio de estados necesitamos una estructura que represente cada paso en nuestro plan parcial:
+
+```python
+class NodoSearch(object):
+    def __init__(self, s, a=None, padre=None, costo_l=None):
+        self.s = s
+        self.a = a
+        self.padre = padre
+        self.d = 0 if padre is None else self.padre.d + 1
+        self.costo = 0 if padre is None else costo_l + self.padre.costo
+
+    def expande(self, search_pb):
+        for a in search_pb.acciones(self.s):
+            s_n, costo_l = search_pb.sucesor(self.s, a)
+            yield NodoSearch(s_n, a, self, costo_l)
+```
+
+**2. Búsqueda Genérica**
+El algoritmo genérico funciona con cualquier estrategia según cómo se maneje la **frontera**:
+
+```python
+def busqueda_generica(s, pb):
+    frontera = [NodoSearch(s)]
+    while frontera:
+        plan = saca_nodo(frontera)
+        if pb.terminal(plan.s):
+            return plan
+        for plan_hijo in plan.expande(pb):
+            agrega_a_frontera(frontera, plan_hijo)
+    return None
+```
+
+La clave está en `saca_nodo`: eso define si la búsqueda es BFS, DFS, UCS, etc.
+
+## **Clase – 13/02/2026**
+
+**Tema: Estrategias de Búsqueda No Informada**
+
+Sea $b$ el factor de ramificación y $d^*$ la profundidad del plan óptimo:
+
+**1. Búsqueda Primero a lo Ancho (BFS)**
+Usa una **cola** (FIFO). Expande nivel por nivel.
+* **Admisible:** Sí.
+* **Óptimo:** Solo si $c_l = 1$.
+* **Temporal:** $O(b^{d^*})$ — **Material:** $O(b^{d^*})$.
+
+**2. Búsqueda Primero en Profundidad (DFS)**
+Usa una **pila** (LIFO). Explora una rama hasta el fondo.
+* **Admisible:** Solo si $d_{max}$ es finita. Cualquier grafo con ciclos puede ciclar.
+* **Óptimo:** No.
+* **Temporal:** $O(b^{d_{max}})$ — **Material:** $O(b \cdot d_{max})$.
+
+**3. Búsqueda por Profundidad Iterativa (IDS)**
+Combina la eficiencia de memoria de DFS con la completitud de BFS. Ejecuta DFS con profundidad limitada $0, 1, 2, \dots$ hasta encontrar solución.
+* **Admisible:** Sí.
+* **Óptimo:** Solo si $c_l = 1$.
+* **Temporal:** $O(b^{d^*})$ — **Material:** $O(b \cdot d^*)$.
+
+## **Clase – 16/02/2026**
+
+**Tema: Búsqueda de Costo Uniforme y Heurísticas**
+
+**1. Problema de Búsqueda (Repaso)**
+Retomamos la formulación del problema de búsqueda: estado inicial, acciones posibles, costo de la acción, sucesor de un nuevo estado y estado terminal. Mencionamos problemas como el Cubo de Rubik y el problema de transporte.
+
+**2. Búsqueda de Costo Uniforme (UCS)**
+Es como Dijkstra: ordena la frontera por **costo acumulado** ($n.costo$). Usamos una cola de prioridad (heap).
+* Cuando sacamos un nodo $g^*$ terminal de la frontera, hemos revisado **todos** los planes $p$ tal que $p.costo < g^*.costo$ y algunos con $p.costo = g^*.costo$, pero **ninguno** con $p.costo > g^*.costo$.
+* **Óptimo:** Sí (si los costos son no negativos).
+* **Admisible:** Sí (si es óptimo, es admisible).
+* **Complejidad:** $O(b^{C^*/\epsilon})$ donde $\epsilon$ es el costo mínimo.
+
+**Nota importante:** Dijkstra no puede usarse en grafos enormes como el Pacman (~120 mil millones de estados) porque no habría memoria suficiente.
+
+**3. Introducción a las Heurísticas**
+Una **heurística** $h(n)$ es un costo estimado de un problema relajado. Es el costo estimado de un plan completo desde $n.estado$ hasta un estado terminal.
+* Si $h(n) \le g^*(n)$ (costo real óptimo desde $n$), entonces se dice que la heurística es **admisible**.
+
+## **Clase – 17/02/2026**
+
+**Tema: Búsqueda Greedy y A***
+
+**1. Comparación de Estrategias**
+
+| Algoritmo | Ordena frontera por | Garantía |
+| :--- | :--- | :--- |
+| **UCS** | $n.costo$ | Óptimo pero lento |
+| **Greedy** | $heuristica(n)$ | Rápido pero no óptimo |
+| **A*** | $n.costo + heuristica(n)$ | Óptimo y más eficiente |
+
+**2. Búsqueda Greedy**
+Ordena la frontera por $h(n)$. Mucha menos búsqueda que UCS pero no garantiza encontrar la solución óptima.
+
+**3. Búsqueda A***
+Ordena por $f(n) = n.costo + h(n)$. Si $g$ es un plan completo que pasa por $n$:
+$$g.costo \ge n.costo + h(n)$$
+Si $g^*$ es un plan óptimo y $h$ es admisible:
+* $h(g^*) = 0$ (porque $g^*$ ya es terminal).
+* $g.costo \ge g^*.costo + h(g^*) = g^*.costo$.
+
+Esto prueba que **A* con heurística admisible es óptimo**.
+
+## **Clase – 18/02/2026**
+
+**Tema: Heurísticas del 8-Puzzle**
+
+**1. Heurísticas para el Puzzle**
+* **$h_1$:** Número de piezas mal colocadas (el espacio en blanco no cuenta como ficha).
+* **$h_2$:** Distancia de Manhattan de cada pieza a su posición final.
+
+Ambas son admisibles porque representan costos de problemas relajados (donde se permiten movimientos que en el original serían ilegales).
+
+**2. Dominancia**
+Si $h_1(n) \le h_2(n)$ para todo $n$, entonces $h_2$ **domina** a $h_1$. La heurística dominante siempre dará un mejor resultado (expandirá menos nodos) con A*.
+
+**3. Heurística Trivial**
+$h(n) = 0$ para todo $n$. Con esta heurística, A* se convierte en UCS. Es admisible pero no aporta información.
+
+**4. La Mejor Heurística**
+La mejor heurística posible sería $h(n) + n.costo$ igual al costo exacto de la solución óptima. Si $h_1$ y $h_2$ son admisibles, la dominante siempre será la mayor.
+
+## **Clase – 20/02/2026**
+
+**Tema: Cuestionario y Heurísticas Admisibles**
+
+**1. Cuestionario en Teams**
+Se realizó un cuestionario evaluativo sobre los temas de búsqueda.
+
+**2. Propiedades de Heurísticas Admisibles**
+Repasamos que $h$ es admisible si $h(n) \le g^*(n)$ donde $g^*(n)$ es el costo del plan óptimo iniciando con $n.estado$.
+* $h(n) = 0$ si $n.estado$ es terminal (el plan óptimo es no hacer nada).
+* En A*, ordenamos los nodos por $n.costo + h(n)$. Si $n.estado$ es terminal, $n.costo + h(n) = n.costo$.
+
+**3. Ejemplo: Carretera con GPS**
+Tienes información de tu ubicación y se puede medir la distancia en línea recta desde donde estás hasta donde quieres llegar. Eso nos da una heurística admisible e información extra para crear la misma. Al tener información extra, el algoritmo óptimo es A*.
+
+## **Clase – 23/02/2026**
+
+**Tema: Búsqueda en Entornos Estocásticos y Planificación**
+
+**1. Clasificación de Entornos para Búsqueda**
+Repasamos los tipos de entornos y qué algoritmo aplica en cada caso:
+
+| Tipo | Propiedades | Enfoque |
+| :--- | :--- | :--- |
+| **Búsquedas** | Discreto, Dinámico, Determinista, Conocido | BFS, DFS, UCS, A* |
+| **Juegos** | Discreto, Dinámico, Determinista, Conocido (multiagente) | Minimax |
+| **CSP** | Discreto, Dinámico, Estocástico, Conocido | Restricciones |
+| **MDP** | Discreto, Dinámico, Estocástico, Desconocido | Aprendizaje por refuerzo |
+
+**2. Planificación**
+La planificación es ir de un estado inicial a un estado terminal con el mejor costo.
+
+**3. Búsqueda por Profundidad Iterativa**
+Es un algoritmo de búsqueda no informada que combina la eficiencia de memoria de la búsqueda en profundidad (DFS) con la completitud y optimalidad de la búsqueda en amplitud (BFS).
+
+**4. Introducción a Juegos con Adversarios**
+Nos enfocamos en **juegos deterministas** donde dos agentes compiten. No todos los agentes trabajan juntos; en estos juegos, un agente intenta maximizar su ganancia mientras el otro intenta minimizarla.
+
+## **Clase – 25/02/2026**
+
+**Tema: Juegos Deterministas y Minimax**
+
+**1. Clase Juego**
+Definimos la interfaz para representar juegos deterministas:
+
+```python
+class JuegoD(object):
+    def acciones_legales(self, estado, jugador):
+        return conjunto_acciones
+
+    def sucesor(self, estado, accion, jugador):
+        return estado_nuevo
+
+    def terminal(self, estado):
+        return bool
+
+    def ganancia(self, estado):
+        return numero
+```
+
+**2. Ejemplo: Juego del Gato (Tic-Tac-Toe)**
+* $S = \{S_0, \dots, S_8\}$, $S_i \in \{-1, 0, 1\}$ (vacío, jugador 1, jugador -1).
+* Acciones: colocar en posición vacía.
+* Terminal: cuando no hay ceros o alguien hizo línea.
+* Ganancia: el valor del jugador que ganó, o 0 si es empate.
+
+**3. Algoritmo Minimax**
+Un jugador **maximiza** y otro **minimiza** la ganancia:
+
+$$a^* = \arg\max_{a} \text{valor}(juego.sucesor(s, a, j), -j)$$
+
+Donde `valor` alterna entre max y min recursivamente. 
+* **Costo:** $O(b^{d_{max}})$, lo que lo hace impracticable para juegos grandes.
+
+## **Clase – 26/02/2026**
+
+**Tema: Poda Alpha-Beta y Negamax**
+
+**1. Propiedades de Minimax**
+Analizamos cómo optimizar minimax. La observación clave es que $\max(x, y) = -\min(-x, -y)$, lo que permite implementar una versión unificada.
+
+**2. Negamax**
+Es minimax pero usando solo una función. La idea es que el valor para un jugador es el negativo del valor para el otro:
+
+$$negamax(s, j) = j \cdot ganancia(s) \text{ si terminal}$$
+
+Para nodos no terminales, se maximiza $-negamax(s', -j)$ sobre todas las jugadas.
+
+**3. Poda Alpha-Beta**
+No necesitamos explorar todo el árbol. Mantenemos dos valores:
+* $\alpha$: mejor valor encontrado para el maximizador.
+* $\beta$: mejor valor encontrado para el minimizador.
+
+Si $\alpha \ge \beta$, podamos esa rama porque sabemos que no afectará el resultado final. Esto reduce la complejidad de $O(b^d)$ a $O(b^{d/2})$ en el mejor caso.
+
+## **Clase – 02/03/2026**
+
+**Tema: Implementación del Juego del Gato**
+
+**1. Implementación Completa**
+Analizamos la implementación completa del juego del gato en Python. La clase `Gato` hereda de `JuegoD` e implementa la detección de líneas ganadoras (filas, columnas, diagonales) y el cálculo de ganancia.
+
+**2. Juego Humano vs Agente**
+Implementamos un ciclo de juego donde un humano juega contra un agente que usa minimax/negamax:
+
+```python
+gato = Gato()
+humano = 1
+s = [0] * 9
+j = 1
+for _ in range(9):
+    if j == humano:
+        acciones = gato.acciones_legales(s, j)
+        a = escoge_accion(acciones)
+    else:
+        a = agente(gato, s, j)
+    s = gato.sucesor(s, a, j)
+    j = -j
+    if gato.terminal(s):
+        break
+```
+
+**3. Búsqueda Quiescente**
+Mencionamos el concepto de **búsqueda quiescente**: cuando cortamos la búsqueda a cierta profundidad, debemos evaluar solo posiciones "tranquilas" (sin capturas o movimientos forzados pendientes) para evitar errores de evaluación.
+
+## **Clase – 03/03/2026**
+
+**Tema: Cadenas de Markov**
+
+**1. Variables Estocásticas**
+Pasamos de entornos deterministas a **estocásticos**. Una variable estocástica $Y$ tiene:
+* **Valores posibles:** $val = \{y_1, \dots, y_n\}$ con $n$ valores posibles.
+* **Distribución:** $Y \sim distribucion$, por ejemplo $Y \sim \mathcal{N}(\mu, \sigma^2)$.
+
+**2. Series de Tiempo**
+Una serie de tiempo es una secuencia de variables aleatorias: $Y_0, Y_1, Y_2, \dots, Y_T$.
+* **Verosimilitud:** $Pr(Y_0:T) = Pr(Y_0, Y_1, \dots, Y_T)$.
+* **Estimación (Filtrado):** $Pr(Y_t | Y_{0:t-1})$.
+* **Pronóstico (Forecasting):** $Pr(Y_{t+h} | Y_{0:t-1})$.
+* **Suavizado (Smoothing):** $Pr(Y_t | Y_{0:T})$ con $t < T$.
+
+**3. Proceso de Markov de Primer Orden**
+Si $Pr(Y_t | Y_{0:t-1}) = Pr(Y_t | Y_{t-1})$, entonces $Y$ es un **proceso de Markov de primer orden**. El futuro solo depende del presente, no del pasado completo.
+
+**4. Matriz de Transición**
+Definimos la probabilidad de transición entre estados:
+$$Pr(X_{t+1} = x_j | X_t = x_i)$$
+
+Y organizamos estas probabilidades en una **matriz de transición** $P$.
+
+## **Clase – 06/03/2026**
+
+**Tema: Variables Aleatorias y Probabilidad**
+
+**1. Definiciones Formales**
+* Cada posible conjunto de nuestro conjunto universo es un **evento**.
+* $Pr: \mathcal{P}(U) \rightarrow [0, 1]$
+* $Pr(\emptyset) = 0$, $Pr(U) = 1$.
+* $Pr(A \cup B) = Pr(A) + Pr(B) - Pr(A \cap B)$.
+
+**2. Variable Aleatoria**
+$Pr(Y = y) = Pr(\{w \in U : Y(w) = y\})$
+
+Si $\{A_1, \dots, A_n\}$ es partición de $U$:
+* $A_i \subseteq U$ y $A_i \cap A_j = \emptyset$ si $i \neq j$.
+
+**3. Distribuciones Comunes**
+Repasamos distribuciones: Bernoulli, Multinomial, y cómo se conectan con los problemas de Markov.
+
+## **Clase – 09/03/2026**
+
+**Tema: Continuación Cadenas de Markov**
+
+**1. Cálculos con la Matriz de Transición**
+Desarrollamos ejemplos numéricos de cómo calcular probabilidades de estados futuros usando la matriz de transición:
+
+$$Pr(X_{t+1} = x_j) = \sum_i Pr(X_{t+1} = x_j | X_t = x_i) \cdot Pr(X_t = x_i)$$
+
+**2. Distribución Estacionaria**
+Calculamos la distribución estacionaria resolviendo $\pi P = \pi$ con $\sum \pi_i = 1$.
+
+**3. Modelo General**
+El modelo general para problemas de decisión secuencial contiene:
+* $S = \{S_1, \dots, S_n\}$ estados.
+* $A = \{a_1, \dots, a_m\}$ acciones.
+* Función de transición estocástica: $Pr(S_{t+1} = s' | S_t = s, A_t = a)$.
+* Recompensa: $r(s, a, s')$.
+
+## **Clase – 10/03/2026**
+
+**Tema: Procesos de Decisión de Markov (MDP)**
+
+**1. Definición Formal de MDP**
+Un MDP se define como:
+* $S = \{S_1, \dots, S_n\}$ — conjunto de estados.
+* $A = \{a_1, \dots, a_m\}$ — conjunto de acciones.
+* $A(s) \subseteq A$ — acciones legales en estado $s$.
+* $T(s, a, s') = Pr(S_{t+1} = s' | S_t = s, A_t = a)$ — función de transición.
+* $r(s, a, s')$ — recompensa.
+* $S_f \subseteq S$ — estados terminales.
+* $\gamma \in [0, 1)$ — factor de descuento.
+
+**2. Política**
+Una **política** $\pi: S \rightarrow A$ es una función que asigna una acción a cada estado.
+* **Determinista:** $\pi(s) = a$.
+* **Estocástica:** $\pi(s, a) = Pr(A_t = a | S_t = s)$.
+
+**3. Objetivo**
+Queremos encontrar la política $\pi^*$ que maximice la **esperanza del retorno**:
+$$R_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \dots = r_t + \gamma R_{t+1}$$
+
+## **Clase – 12/03/2026**
+
+**Tema: Juego de Dado y Políticas**
+
+**1. Ejemplo: Juego de Dado**
+Para cada ronda $r = 1, 2, \dots$:
+* Eliges **stay** o **quit**.
+* Si quit: recibes \$10 y termina el juego.
+* Si stay: recibes \$4, luego lanzas un dado de 6 caras. Si sale 1 o 2, termina el juego. Si no, continúas a la siguiente ronda.
+
+**2. Función de Valor de Estado**
+La función de valor de estado $V^\pi(s)$ mide qué tan buena es la política $\pi$ desde el estado $s$:
+
+$$V^\pi(s) = E^\pi[R_t | S_t = s]$$
+
+$$V^\pi(s) = \sum_{a \in A(s)} \pi(s, a) \sum_{s' \in S} T(s, a, s') [r(s, a, s') + \gamma V^\pi(s')]$$
+
+**3. Comparación de Políticas**
+Si $V^{\pi_1}(s) \ge V^{\pi_2}(s)$ para todo $s \in S$, entonces $\pi_1$ es mejor que $\pi_2$.
+
+**4. Política Óptima**
+$\pi^*$ es una política óptima si $V^{\pi^*}(s) \ge V^\pi(s)$ para todo $s$ y toda política $\pi$.
+
+## **Clase – 13/03/2026**
+
+**Tema: Función de Valor Estado-Acción**
+
+**1. Función Q**
+La función de valor estado-acción $Q^*(s, a)$ mide el valor de tomar la acción $a$ en el estado $s$ y luego seguir la política óptima:
+
+$$Q^*(s, a) = \sum_{s' \in S} T(s, a, s') [r(s, a, s') + \gamma V^*(s')]$$
+
+**2. Relación entre $V^*$ y $Q^*$**
+$$V^*(s) = \max_a Q^*(s, a)$$
+
+$$\pi^*(s) = \arg\max_a Q^*(s, a)$$
+
+## **Clase – 16/03/2026**
+
+**Tema: Ecuación de Optimalidad de Bellman**
+
+**1. Ecuación de Bellman**
+La **ecuación de optimalidad de Bellman** establece que el valor óptimo de un estado es:
+
+$$V^*(s) = \max_a \sum_{s' \in S} T(s, a, s') [r(s, a, s') + \gamma V^*(s')]$$
+
+Esta ecuación es la base de los algoritmos de programación dinámica para resolver MDPs.
+
+**2. Iteración de Valor**
+Implementamos el algoritmo de iteración de valor:
+
+```python
+def iter_valor(mdp, max_iter=1e5, tol=1e-6):
+    Q = {(s, a): 0 for s in mdp.S for a in mdp.acciones_legales(s)}
+    for _ in range(max_iter):
+        err = 0
+        for s, a in Q.keys():
+            q = sum(
+                mdp.T(s, a, s_p) * (mdp.r(s, a, s_p) + 
+                mdp.gamma * max(Q[s_p, a_p] for a_p in mdp.acciones_legales(s_p)))
+                for s_p in mdp.estados
+            )
+            err = max(err, abs(Q[s, a] - q))
+            Q[s, a] = q
+        if err < tol:
+            break
+    return Q
+```
+
+**3. Generación de Política Greedy**
+A partir de Q, generamos la política óptima:
+```python
+def genera_politica_greedy(mdp, Q):
+    pi = {}
+    for s in mdp.estados:
+        pi[s] = max(
+            (a for a in mdp.acciones_legales(s)),
+            key=lambda a: Q[s, a]
+        )
+    return pi
+```
+
+## **Clase – 23/03/2026**
+
+**Tema: Análisis de Código – Iteración de Valor y Política**
+
+**1. Iteración de Política**
+Además de iterar sobre los valores, podemos iterar sobre las políticas directamente. El algoritmo de **iteración de política** alterna entre:
+1. **Evaluación de política:** Calcular $V^\pi(s)$ para la política actual.
+2. **Mejora de política:** Actualizar $\pi$ eligiendo la acción que maximice $Q^\pi(s, a)$.
+
+```python
+def iter_politica(mdp, pi, max_it=1e3, tol=1e-3):
+    V = {s: 0 for s in mdp.S}
+    for _ in range(max_it):
+        err = 0
+        for s in mdp.S:
+            v_t = sum(
+                pi(s, a) * sum(
+                    mdp.T(s, a, s_p) * (mdp.r(s, a, s_p) + mdp.gamma * V[s_p])
+                    for s_p in mdp.S
+                )
+                for a in mdp.acciones_legales(s)
+            )
+            err = max(err, abs(V[s] - v_t))
+            V[s] = v_t
+        if err < tol:
+            break
+    return V
+```
+
+**2. Examen Intermedio**
+Se realizó un cuestionario en Teams como examen intermedio del curso.
+
+## **Clase – 26/03/2026**
+
+**Tema: Análisis de Código – Programación Dinámica y RL**
+
+En esta clase analizamos el código de programación dinámica (DP) y aprendizaje por refuerzo (RL). No hubo clase el 26 de marzo según las notas.
+
+## **Clase – 27/03/2026**
+
+**Tema: Blackjack como MDP**
+
+**1. Representación del Estado**
+Modelamos el Blackjack como un MDP:
+* **Estado $s$:** $(n_a, M_a, a, d)$ — número de cartas del agente, suma, si tiene as, carta visible del dealer.
+* **Acciones:** Pedir carta o plantarse. También se puede doblar.
+* Si la suma llega a 21, pierde. El dealer pide hasta 17.
+
+**2. Factor de Descuento**
+$\gamma = 0$ porque el juego es episódico (cada mano es independiente).
+
+## **Clase – 02/04/2026**
+
+**Tema: MDP Simulado (MDPsim)**
+
+**1. MDP con Simulador**
+Cuando no conocemos la función de transición $T(s, a, s')$ ni la recompensa $r(s, a, s')$ de forma explícita, usamos un **simulador**:
+
+```python
+class MDPsim:
+    def __init__(self, s, gamma):
+        self.s = s
+        self.gamma = gamma
+
+    def acciones_legales(self, s):
+        return  # iterable con acciones legales en s
+
+    def sucesor(self, s, a):
+        return s_prime, r  # nuevo estado y recompensa
+
+    def terminal(self, s):
+        return True  # o False
+```
+
+**2. Evaluación de Política con Simulador**
+Ya teniendo $\pi$ para un estado $s$:
+* Aplico: $a = \pi(s)$
+* $s' = MDPsim.sucesor(s, a)$
+* $r = MDPsim.recompensa(s, a, s')$
+* $V^\pi(s) \approx r + \gamma \cdot V^\pi(s')$
+
+**3. Diferencia Temporal (TD)**
+En el caso estocástico, actualizamos el valor de forma incremental:
+$$V^\pi(s) \leftarrow V^\pi(s) + \alpha [r + \gamma V^\pi(s') - V^\pi(s)]$$
+
+```python
+def TD(mdl, pi, alpha, max_episodios, max_it, tol):
+    V = {s: 0 for s in mdl.S}
+    for _ in range(max_episodios):
+        err = 0
+        s = mdl.estado_inicial()
+        for _ in range(max_it):
+            a = pi(s)
+            s_p = mdl.sucesor(s, a)
+            r = mdl.recompensa(s, a, s_p)
+            delta = r + mdl.gamma * V[s_p] - V[s]
+            V[s] = V[s] + alpha * delta
+            err = max(err, abs(delta))
+            s = s_p
+            if mdl.terminal(s):
+                break
+        if err < tol:
+            break
+    return V
+```
+
+## **Clase – 06/04/2026**
+
+**Tema: MDPsim - Clase Política y Aprendizaje**
+
+**1. Clase Política**
+Implementamos una clase para representar políticas:
+
+```python
+class Politica:
+    def __init__(self, p_dict):
+        self.pi = p_dict
+
+    def __call__(self, s):
+        return self.pi[s]
+```
+
+**2. Política Epsilon-Greedy**
+Para equilibrar **exploración** (probar acciones nuevas) y **explotación** (usar lo conocido):
+
+```python
+class PoliticaGreedy(Politica):
+    def __init__(self, epsilon):
+        self.epsilon = epsilon
+
+    def __call__(self, s, Q):
+        if random.random() < self.epsilon:
+            return random.choice(acciones_legales)
+        return max(acciones, key=lambda a: Q[s, a])
+```
+
+## **Clase – 07/04/2026**
+
+**Tema: SARSA y Q-Learning**
+
+**1. SARSA (On-Policy)**
+SARSA actualiza $Q(s, a)$ usando la acción que **realmente** toma el agente en el siguiente estado:
+
+```python
+def SARSA(mdl, num_ep, num_it, alpha, tol, epsilon):
+    pi = PoliticaGreedy(epsilon)
+    Q = {(s, a): 0 for s in mdl.S for a in mdl.acciones_legales(s)}
+    for _ in range(num_ep):
+        err = 0
+        s = mdl.estado_inicial()
+        a = pi(s, mdl.acciones_legales(s), Q)
+        for _ in range(num_it):
+            s_p = mdl.sucesor(s, a)
+            r = mdl.recompensa(s, a, s_p)
+            a_p = pi(s_p, mdl.acciones_legales(s_p), Q)
+            q = r + mdl.gamma * Q[s_p, a_p]
+            err = max(err, abs(Q[s, a] - q))
+            Q[s, a] = q
+            s, a = s_p, a_p
+            if mdl.terminal(s):
+                break
+        if err < tol:
+            break
+    return Q
+```
+
+**2. Q-Learning (Off-Policy)**
+Q-Learning actualiza $Q(s, a)$ usando el **máximo** $Q$ del siguiente estado, independientemente de la acción que tome:
+
+```python
+def Qlearning(mdl, num_ep, num_it, alpha, tol, epsilon):
+    pi = PoliticaGreedy(epsilon)
+    Q = {(s, a): 0 for s in mdl.S for a in mdl.acciones_legales(s)}
+    for _ in range(num_ep):
+        err = 0
+        s = mdl.estado_inicial()
+        for _ in range(num_it):
+            a = pi(s, mdl.acciones_legales(s), Q)
+            s_p = mdl.sucesor(s, a)
+            r = mdl.recompensa(s, a, s_p)
+            q = r + mdl.gamma * max(Q[s_p, a_p] for a_p in mdl.acciones_legales(s_p))
+            err = max(err, abs(q - Q[s, a]))
+            Q[s, a] = q
+            s = s_p
+            if mdl.terminal(s):
+                break
+        if err < tol:
+            break
+    return Q
+```
+
+**3. Diferencia Clave**
+* **SARSA** es **on-policy**: aprende el valor de la política que está usando (incluyendo exploración).
+* **Q-Learning** es **off-policy**: aprende el valor de la política óptima, independientemente de la política que use para explorar.
+
+## **Clase – 09/04/2026**
+
+**Tema: Optimización y Búsquedas Locales**
+
+**1. Planteamiento**
+Dado $f: S \rightarrow \mathbb{R}$, queremos encontrar $x^*$ tal que $f(x^*) \le f(x)$ para todo $x$ (minimización).
+
+**2. Máximos y Mínimos**
+* **Máximo global:** $x^* = \arg\max f(x)$
+* **Máximo local:** $x^* = \arg\max_{x \in Vecinos(x^*)} f(x)$
+* Cuando el gradiente es cero, puede ser un máximo, mínimo o un punto de silla.
+
+**3. Ejemplos**
+* **Problema del Viajero (TSP):** $x$ es una permutación de ciudades. $f(x) = \sum d(x_i, x_{i+1})$.
+* **N-Reinas:** Colocar $n$ reinas en un tablero $n \times n$ sin que se ataquen. $x$ es una permutación (una reina por renglón).
+
+**4. Clase PbOptim**
+
+```python
+class PbOptim:
+    def costo(self, x):
+        return f(x)
+
+    def es_estado(self, x):
+        return True  # o False
+
+    def estado_aleatorio(self):
+        return estado
+
+    def vecinos(self, x):
+        return iterable
+
+    def vecino_aleatorio(self, x):
+        return un_vecino
+```
+
+## **Clase – 13/04/2026**
+
+**Tema: Temple Simulado y Algoritmos Genéticos**
+
+**1. Búsqueda Aleatoria**
+La forma más simple: generar estados aleatorios y quedarse con el mejor.
+
+**2. Descenso de Colinas (Hill Climbing)**
+Desde un punto aleatorio, moverse siempre al mejor vecino hasta que ningún vecino sea mejor (mínimo local).
+
+```python
+def descenso_colinas(pb, num_iter):
+    x = pb.estado_aleatorio()
+    c = pb.costo(x)
+    for _ in range(num_iter):
+        terminal = True
+        for vecino in pb.vecinos(x):
+            c_vecino = pb.costo(vecino)
+            if c_vecino < c:
+                x, c = vecino, c_vecino
+                terminal = False
+        if terminal:
+            break
+    return x, c
+```
+
+**3. Temple Simulado (Simulated Annealing)**
+Permite aceptar soluciones peores con cierta probabilidad que decrece con el tiempo (temperatura):
+
+```python
+def temple_simulado(pb, T_max, calendarizador, T_min):
+    x = pb.estado_aleatorio()
+    c = pb.costo(x)
+    T = T_max
+    while T > T_min:
+        vecino = pb.vecino_aleatorio(x)
+        c_vecino = pb.costo(vecino)
+        inc = c - c_vecino
+        if inc >= 0 or random.random() < math.exp(inc / T):
+            x, c = vecino, c_vecino
+        T = calendarizador(T)
+    return x, c
+```
+
+**4. Algoritmos Genéticos**
+Inspirados en la evolución biológica:
+* **Población:** $\{(x_1), (x_2), \dots, (x_{pop})\}$.
+* **Adaptación:** Inversamente proporcional al costo.
+* **Selección:** Por ruleta o torneo.
+* **Cruza:** Combinar características de dos padres para generar hijos.
+* **Mutación:** Cambio aleatorio en un individuo.
+* **Elitismo:** Conservar los mejores individuos entre generaciones.
+
+## **Clase – 16/04/2026**
+
+**Tema: Análisis de Código – Búsquedas Locales y Algoritmos Genéticos**
+
+En esta clase analizamos la implementación de los algoritmos de búsqueda local vistos en las clases anteriores. Revisamos el código de:
+* Búsqueda aleatoria
+* Descenso de colinas
+* Temple simulado
+* Algoritmos genéticos aplicados al puzzle (8-puzzle y variantes)
+
+Se discutió cómo representar los cromosomas para el puzzle (permutaciones como `532806914`) y cómo definir operadores de cruza y mutación que mantengan permutaciones válidas.
